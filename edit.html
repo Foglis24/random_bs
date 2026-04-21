@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>Διαχείριση</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>Διαχείριση Προϊόντων</h1>
+    <nav>
+        <a href="index.html">← Πίσω στο κατάστημα</a>
+    </nav>
+</header>
+
+<main>
+
+<!-- ===== FORM ===== -->
+<h2>Νέο προϊόν</h2>
+
+<input id="name" placeholder="Όνομα"><br><br>
+<input id="price" placeholder="Τιμή"><br><br>
+<input id="desc" placeholder="Περιγραφή"><br><br>
+<input id="img" placeholder="URL εικόνας"><br><br>
+
+<button onclick="addProduct()">Αποθήκευση</button>
+
+<hr>
+
+<!-- ===== LIST ===== -->
+<h2>Υπάρχοντα προϊόντα</h2>
+<div id="existing-products">
+    <ul id="list"></ul>
+</div>
+
+</main>
+
+<footer>
+    <p>Admin panel</p>
+</footer>
+
+<script>
+let products = [];
+
+/* =========================
+   LOAD FROM products.json
+   ========================= */
+fetch('products.json')
+    .then(res => res.json())
+    .then(data => {
+        products = data;
+        showProducts();
+    })
+    .catch(err => {
+        console.error("Error loading JSON:", err);
+    });
+
+/* =========================
+   SHOW PRODUCTS
+   ========================= */
+function showProducts() {
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    products.forEach((p, i) => {
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+            ${p.name} (€${p.price})
+            <button onclick="deleteProduct(${i})">Διαγραφή</button>
+        `;
+
+        list.appendChild(li);
+    });
+}
+
+/* =========================
+   ADD PRODUCT
+   ========================= */
+function addProduct() {
+    const name = document.getElementById("name").value;
+    const price = document.getElementById("price").value;
+    const desc = document.getElementById("desc").value;
+    const img = document.getElementById("img").value;
+
+    const newProduct = {
+        id: Date.now(),
+        name,
+        price,
+        desc,
+        img
+    };
+
+    products.push(newProduct);
+    showProducts();
+
+    alert("⚠️ Added locally only.\nTo save permanently you need a backend.");
+}
+
+/* =========================
+   DELETE
+   ========================= */
+function deleteProduct(i) {
+    products.splice(i, 1);
+    showProducts();
+
+    alert("⚠️ Deleted locally only.\nNeeds backend to persist.");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Random Bullshit Shop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- --------------  WELCOME BANNER  ---------------- -->
+    <header>
+        <h1>Welcome to Random Bullshit Shop!</h1>
+        <p>Here you will find the most nigdis gastrenteritida products ever invented.</p>
+        <nav>
+            <!-- Link to the very simple admin page – keep it secret! -->
+            <a href="edit.html">🔧 Edit products (maintainers only)</a>
+        </nav>
+    </header>
+    <!-- --------------  PRODUCT LIST  ---------------- -->
+    <main>
+        <section id="product-list">
+            <!-- Products will be injected here by JavaScript -->
+        </section>
+    </main>
+    <!-- --------------  FOOTER  ---------------- -->
+    <footer>
+        <p>&copy; all rights reserved to fotios taxiarchis tsakanikos.</p>
+    </footer>
+    <!-- -------------------------------------------------
+         JavaScript that reads products from products.json
+         ------------------------------------------------- -->
+    <script>
+        // ---------- 1️⃣ Load products from config file ----------
+        let products = [];
+        const listEl = document.getElementById("product-list");
+
+        // Fetch the products.json file
+        fetch('products.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Could not load products.json');
+                }
+                return response.json();
+            })
+            .then(data => {
+                products = data;
+                render();
+            })
+            .catch(error => {
+                console.error('❌ Error loading products:', error);
+                listEl.innerHTML = '<p style="text-align:center; color:red;">Error loading products! Make sure products.json exists.</p>';
+            });
+
+        // ---------- 2️⃣ Render the products ----------
+        function render() {
+            // Empty container
+            listEl.innerHTML = "";
+            
+            // Create a <article> for each product
+            products.forEach(p => {
+                const card = document.createElement("article");
+                card.className = "product-card";
+                card.dataset.id = p.id;
+                
+                card.innerHTML = `
+                    <img src="${p.img}" alt="${p.name}" class="product-img">
+                    <h2 class="product-name">${p.name}</h2>
+                    <p class="product-price">💲 ${p.price}</p>
+                    <p class="product-desc">${p.desc}</p>
+                    <button class="add-to-cart">Add to cart</button>
+                `;
+                
+                listEl.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
